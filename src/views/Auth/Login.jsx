@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import { useHistory, useLocation } from 'react-router-dom';
+import { PrivateRoute } from '../../components/PrivateRoute/PrivateRoute';
 import { useAuth } from '../../hooks/useAuth';
 import { useForm } from '../../hooks/useForm';
 import styles from './Login.css';
@@ -10,6 +11,7 @@ export default function Login() {
   const auth = useAuth();
   const { formState, handleFormChange } = useForm({ email: '', password: '' });
   const [error, setError] = useState(null);
+  console.log(history);
 
   // The `from` property of `location.state` gives us
   // the URL to redirect to after logging in.
@@ -17,7 +19,10 @@ export default function Login() {
 
   const handleLogin = (event) => {
     event.preventDefault();
+    setError('it dont work');
     const loginWasSuccessful = auth.login(formState.email, formState.password);
+    loginWasSuccessful ? history.replace(from) : error;
+    console.log(loginWasSuccessful);
 
     // TODO: If login was unsuccessful, set an error with a message
     // to display to the user that their login failed.
@@ -32,18 +37,24 @@ export default function Login() {
     <>
       <h3>You must log in to view the page at {from.pathname}</h3>
       <form onSubmit={handleLogin} className={styles.loginForm}>
-        <label>Email</label>
-        <input
-          id="email"
-          name="email"
-          type="email"
-        />{' '}
-        <label>Password</label>
-        <input
-          id="password"
-          name="password"
-          type="password"
-        />
+        <label>
+          Email
+          <input
+            id="email"
+            name="email"
+            type="email"
+            onChange={handleFormChange}
+          />
+        </label>
+        <label>
+          Password
+          <input
+            id="password"
+            name="password"
+            type="password"
+            onChange={handleFormChange}
+          />
+        </label>
         <button type="submit" aria-label="Sign In">
           Sign in
         </button>
